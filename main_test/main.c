@@ -16,6 +16,9 @@
 #include "rpiGpio.h"
 #include <pthread.h>
 
+
+uint8_t speedTable[7] = {0,70,89,108,127,146,165};
+
 void Motorinit()
 {
     uint8_t Totalpower[2]={4,250};     // power between 0 and 255
@@ -42,7 +45,7 @@ void Motorcontrol(uint8_t voorachterLinks, uint8_t SnelheidLinks, uint8_t voorac
     uint8_t richtingLinks = (voorachterLinks == 1) ? 2 : 3;
     uint8_t richtingRechts = (voorachterRechts == 1) ? 2 : 3;
 
-    uint8_t MotorHF[7] = {7,3,SnelheidLinks,richtingLinks,3,SnelheidRechts,richtingRechts};
+    uint8_t MotorHF[7] = {7,3,speedTable[SnelheidLinks],richtingLinks,3,speedTable[SnelheidRechts],richtingRechts};
     gpioI2cWriteData(MotorHF[0],7);
 }
 
