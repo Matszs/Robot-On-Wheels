@@ -4,6 +4,8 @@
 //
 //  Created by Mats Otten on 14-09-15.
 //  Copyright (c) 2015 Mats Otten. All rights reserved.
+
+// sudo gcc -o project project.c -L/usr/local/lib  -lwiringPi -lwiringPiDev -lpthread -lm -lrpigpio
 //
 
 #define PORT_NUMBER	1212
@@ -15,7 +17,10 @@
 #include <arpa/inet.h> //inet_addr
 #include <pthread.h> // threads
 
+#include "rpiGpio.h"
 #include "socket.c"
+#include "modules/motor.c"
+
 
 int main() {
     setvbuf(stdout, NULL, _IONBF, 0); // display printf's
@@ -26,7 +31,7 @@ int main() {
 }
 
 void run() {
-    // TODO: add runnable ...
+	MotorInit();
 	
     while(1) {
        
@@ -34,13 +39,20 @@ void run() {
 }
 
 void onCommand(char *commandData) {
-	size_t ln = strlen(commandData);
-	if (commandData[ln - 1] == '\n')
-		commandData[ln - 1] = '\0';
-	if (commandData[ln - 2] == '\r')
-		commandData[ln - 2] = '\0';
 
-    printf("%s\n", commandData);
+	void (*motorCallback)(uint8_t,uint8_t,uint8_t,uint8_t) = MotorcontrolMovement;
+	movement direction;
+
+	printf("%d", (uint8_t)commandData[0]);
+
+	if((uint8_t)commandData[0] == 113) {
+		unpackMovement(0, &direction);
+        MotorControl(&direction, *motorCallback);
+	} else {
+
+		unpackMovement((uint8_t)commandData[0], &direction);
+		MotorControl(&direction, *motorCallback);
+    }
 
 	// TODO: add engine ...
 }
