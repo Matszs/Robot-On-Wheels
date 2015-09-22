@@ -66,7 +66,8 @@ void *listenForConnections(void *arg) {
 
         while( (read_size = recv(userSocket, client_message, 1024, 0)) > 0 ){
             onCommand(client_message);
-			for (int i = 0; i < read_size; i++) {
+            int i;
+			for (i = 0; i < read_size; i++) {
 				client_message[i] = '\0';
 			}
         }
