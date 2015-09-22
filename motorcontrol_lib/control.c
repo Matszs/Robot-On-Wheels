@@ -5,11 +5,9 @@
 //  Created by Patrick Hendriks on 14-09-15.
 //  Copyright (c) 2015 Patrick Hendriks. All rights reserved.
 //  Toegestaan om voor het Project Robot on Wheels vrij te gebruiken en of aan te passen.
-//  
+//
 
 #include "control.h"
-
-uint8_t speedTable[7] = {0,70,89,108,127,146,165};
 
 
 
