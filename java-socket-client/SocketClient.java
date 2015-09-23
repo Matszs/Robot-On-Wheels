@@ -6,7 +6,7 @@ import java.net.Socket;
 public class SocketClient {
     String url;
     int port;
-    BufferedWriter outputStream;
+	DataOutputStream outputStream;
     BufferedReader inputStream;
     Socket socket;
 
@@ -26,32 +26,24 @@ public class SocketClient {
         try
         {
             this.socket = new Socket(this.url, this.port);
-            OutputStream os = this.socket.getOutputStream();
             InputStream is = this.socket.getInputStream();
-            this.outputStream = new BufferedWriter(new OutputStreamWriter(os));
+			this.outputStream = new DataOutputStream(this.socket.getOutputStream());
             this.inputStream = new BufferedReader(new InputStreamReader(is));
-
-
-
-        }catch(IOException e)
-        {
-
+        }catch(IOException e) {
             e.printStackTrace();
         }
-
     }
     public void stop() throws IOException {
         this.socket.close();
     }
 
     public void write(String data) throws IOException {
-        this.outputStream.write(data);
-        this.outputStream.newLine();
+        this.outputStream.writeBytes(data);
         this.outputStream.flush();
     }
 
     public void write(int data) throws IOException {
-        this.outputStream.write(data);
+        this.outputStream.writeByte(data);
         this.outputStream.flush();
     }
 

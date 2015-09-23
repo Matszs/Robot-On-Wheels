@@ -9,6 +9,7 @@
 //
 
 #define PORT_NUMBER	1212
+#define DEBUG	0
 
 #include <stdio.h>
 #include <string.h> //strlen
@@ -16,21 +17,21 @@
 #include <sys/socket.h>
 #include <arpa/inet.h> //inet_addr
 #include <pthread.h> // threads
+#include <wiringPi.h>
 
-#include "rpiGpio.h"
-#include "socket.c"
+#include "modules/socket.c"
 #include "modules/motor.c"
 
 
 int main() {
     setvbuf(stdout, NULL, _IONBF, 0); // display printf's
-    
-    init();
+
     run();
     return 0;
 }
 
 void run() {
+	socketInit();
 	MotorInit();
 	
     while(1) {
@@ -43,16 +44,11 @@ void onCommand(char *commandData) {
 	void (*motorCallback)(uint8_t,uint8_t,uint8_t,uint8_t) = MotorcontrolMovement;
 	movement direction;
 
-	printf("%d", (uint8_t)commandData[0]);
+	// The next line clears the input if commandData[0] = 10;
+	//commandData[strcspn(commandData, "\r\n")] = 0; // find location of \r\n and 'removes' it.
 
-	if((uint8_t)commandData[0] == 113) {
-		unpackMovement(0, &direction);
-        MotorControl(&direction, *motorCallback);
-	} else {
-
-		unpackMovement((uint8_t)commandData[0], &direction);
-		MotorControl(&direction, *motorCallback);
-    }
+	unpackMovement((uint8_t)commandData[0], &direction);
+	MotorControl(&direction, *motorCallback);
 
 	// TODO: add engine ...
 }
