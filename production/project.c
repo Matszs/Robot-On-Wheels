@@ -19,9 +19,12 @@
 #include <pthread.h> // threads
 #include <wiringPi.h>
 
+#include  "rpiGpio.h"
+#include  <softPwm.h>
+
 #include "modules/socket.c"
 #include "modules/motor.c"
-
+#include "modules/distance.c"
 
 int main() {
     setvbuf(stdout, NULL, _IONBF, 0); // display printf's
@@ -33,9 +36,11 @@ int main() {
 void run() {
 	socketInit();
 	MotorInit();
+	distanceInit();
 	
     while(1) {
-       
+       printf("afstand: %d\n", distanceRead());
+       usleep(1000000);
     }
 }
 
